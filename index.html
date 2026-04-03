@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C++ Lab Report</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --border: #30363d;
+    --accent1: #58a6ff;
+    --accent2: #f78166;
+    --accent3: #3fb950;
+    --accent4: #d2a8ff;
+    --accent5: #ffa657;
+    --accent6: #79c0ff;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --keyword: #ff7b72;
+    --type: #ffa657;
+    --string: #a5d6ff;
+    --comment: #6e7681;
+    --number: #79c0ff;
+    --function: #d2a8ff;
+    --operator: #ff7b72;
+    --include: #3fb950;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  /* ── PAGE WRAPPER ── */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto 4mm;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 12mm 14mm 10mm;
+    position: relative;
+    page-break-after: always;
+    break-after: page;
+    overflow: hidden;
+  }
+
+  /* Decorative corner stripe */
+  .page::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--accent1), var(--accent4), var(--accent2));
+  }
+
+  /* ── HEADER (title page) ── */
+  .title-page {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    background: radial-gradient(ellipse at 50% 30%, #1c2736 0%, var(--bg) 70%);
+  }
+
+  .title-page::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 39px,
+        rgba(48,54,61,0.3) 40px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 39px,
+        rgba(48,54,61,0.15) 40px
+      );
+    pointer-events: none;
+  }
+
+  .badge {
+    background: linear-gradient(135deg, #58a6ff22, #d2a8ff22);
+    border: 1px solid var(--accent1);
+    color: var(--accent1);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 9pt;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    z-index: 1;
+  }
+
+  .title-page h1 {
+    font-size: 32pt;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent1), var(--accent4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    z-index: 1;
+  }
+
+  .title-page h2 {
+    font-size: 14pt;
+    color: var(--muted);
+    font-weight: 300;
+    z-index: 1;
+  }
+
+  .divider {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    border-radius: 2px;
+    z-index: 1;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+    max-width: 320px;
+    z-index: 1;
+  }
+
+  .info-item {
+    background: rgba(88,166,255,0.06);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    text-align: left;
+  }
+
+  .info-item .label {
+    font-size: 7pt;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .info-item .value {
+    font-size: 9pt;
+    color: var(--text);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  /* ── PROGRAM PAGE ── */
+  .prog-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .prog-num {
+    min-width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14pt;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    flex-shrink: 0;
+  }
+
+  .prog-title-wrap {}
+
+  .prog-title-wrap .aim-label {
+    font-size: 7pt;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+
+  .prog-title-wrap h2 {
+    font-size: 11.5pt;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  /* section labels */
+  .section-label {
+    font-size: 7pt;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin: 6px 0 3px;
+    padding-left: 2px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .desc-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 10px;
+    font-size: 9pt;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── CODE BLOCK ── */
+  .code-wrap {
+    background: #010409;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .code-topbar {
+    background: #161b22;
+    border-bottom: 1px solid var(--border);
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .code-lang {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5pt;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  .code-body {
+    padding: 10px 12px;
+    overflow: auto;
+    flex: 1;
+  }
+
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    line-height: 1.65;
+    white-space: pre;
+    tab-size: 4;
+  }
+
+  /* syntax tokens */
+  .kw  { color: var(--keyword); font-weight: 600; }
+  .ty  { color: var(--type); }
+  .st  { color: var(--string); }
+  .cm  { color: var(--comment); font-style: italic; }
+  .nm  { color: var(--number); }
+  .fn  { color: var(--function); }
+  .op  { color: var(--operator); }
+  .pp  { color: var(--include); }
+  .id  { color: var(--text); }
+
+  /* output box */
+  .output-box {
+    background: #010409;
+    border: 1px solid #3fb95040;
+    border-left: 3px solid var(--accent3);
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin-top: 5px;
+  }
+
+  .output-box .section-label { color: var(--accent3); margin: 0 0 3px; }
+
+  .output-box pre {
+    color: var(--accent3);
+    font-size: 7.5pt;
+  }
+
+  /* page footer */
+  .page-footer {
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    padding-top: 5px;
+  }
+
+  .page-footer span {
+    font-size: 7pt;
+    color: var(--comment);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* color accent per prog */
+  .c1 { background: #58a6ff22; color: var(--accent1); border: 1px solid var(--accent1); }
+  .c2 { background: #f7816622; color: var(--accent2); border: 1px solid var(--accent2); }
+  .c3 { background: #3fb95022; color: var(--accent3); border: 1px solid var(--accent3); }
+  .c4 { background: #d2a8ff22; color: var(--accent4); border: 1px solid var(--accent4); }
+  .c5 { background: #ffa65722; color: var(--accent5); border: 1px solid var(--accent5); }
+  .c6 { background: #79c0ff22; color: var(--accent6); border: 1px solid var(--accent6); }
+
+  @media print {
+    body { background: #0d1117; }
+    .page { margin: 0; border: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════ TITLE PAGE ════════════════════════ -->
+<div class="page title-page">
+  <div class="badge">Lab Report · C++ Programming</div>
+  <h1>C++ Lab<br>Manual</h1>
+  <div class="divider"></div>
+  <h2>Object Oriented Programming with C++</h2>
+  <div class="info-grid">
+    <div class="info-item"><div class="label">Subject</div><div class="value">C++ Programming</div></div>
+    <div class="info-item"><div class="label">Programs</div><div class="value">15 Experiments</div></div>
+    <div class="info-item"><div class="label">Branch</div><div class="value">ECE — Sem III</div></div>
+    <div class="info-item"><div class="label">Session</div><div class="value">2024 – 2028</div></div>
+  </div>
+  <div class="badge" style="margin-top:6px; border-color: var(--accent4); color: var(--accent4);">Purnea College of Engineering · BEU Patna</div>
+</div>
+
+
+<!-- ════ PROGRAM 1 ════ -->
+<div class="page">
+  <div class="prog-header">
+    <div class="prog-num c1">01</div>
+    <div class="prog-title-wrap">
+      <div class="aim-label">Aim / Objective</div>
+      <h2>Variables, Data Types, Constants, Typecasting &amp; Arithmetic Operations</h2>
+    </div>
+  </div>
+  <div class="section-label">// description</div>
+  <div class="desc-box">Demonstrate the use of different data types (int, float, double, char), declare constants using <code>const</code>, perform typecasting between types, and apply basic arithmetic operators (+, -, *, /, %).</div>
+  <div class="section-label">// source code — program1.cpp</div>
+  <div class="code-wrap">
+    <div class="code-topbar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-lang">C++</span></div>
+    <div class="code-body"><pre>
+<span class="pp">#include&lt;iostream&gt;</span>
+<span class="pp">#include&lt;iomanip&gt;</span>
+<span class="kw">using namespace</span> std<span class="op">;</span>
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="cm">// Variable declarations with different data types</span>
+    <span class="ty">int</span>    a <span class="op">=</span> <span class="nm">10</span><span class="op">,</span> b <span class="op">=</span> <span class="nm">3</span><span class="op">;</span>
+    <span class="ty">float</span>  f <span class="op">=</span> <span class="nm">3.14f</span><span class="op">;</span>
+    <span class="ty">double</span> d <span class="op">=</span> <span class="nm">9.81</span><span class="op">;</span>
+    <span class="ty">char</span>   ch <span class="op">=</span> <span class="st">'A'</span><span class="op">;</span>
+    <span class="ty">bool</span>   flag <span class="op">=</span> <span class="kw">true</span><span class="op">;</span>
+
+    <span class="cm">// Constant</span>
+    <span class="kw">const</span> <span class="ty">float</span> PI <span class="op">=</span> <span class="nm">3.14159f</span><span class="op">;</span>
+
+    cout <span class="op">&lt;&lt;</span> <span class="st">"=== Data Types ==="</span> <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"int    : "</span> <span class="op">&lt;&lt;</span> a   <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"float  : "</span> <span class="op">&lt;&lt;</span> f   <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"double : "</span> <span class="op">&lt;&lt;</span> d   <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"char   : "</span> <span class="op">&lt;&lt;</span> ch  <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"bool   : "</span> <span class="op">&lt;&lt;</span> flag <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"const PI: "</span> <span class="op">&lt;&lt;</span> PI  <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+
+    cout <span class="op">&lt;&lt;</span> <span class="st">"\n=== Arithmetic Operations ==="</span> <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"a + b = "</span> <span class="op">&lt;&lt;</span> (a <span class="op">+</span> b) <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"a - b = "</span> <span class="op">&lt;&lt;</span> (a <span class="op">-</span> b) <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"a * b = "</span> <span class="op">&lt;&lt;</span> (a <span class="op">*</span> b) <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"a / b = "</span> <span class="op">&lt;&lt;</span> (a <span class="op">/</span> b) <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"a % b = "</span> <span class="op">&lt;&lt;</span> (a <span class="op">%</span> b) <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+
+    cout <span class="op">&lt;&lt;</span> <span class="st">"\n=== Typecasting ==="</span> <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"(float)a/b = "</span> <span class="op">&lt;&lt;</span> (<span class="ty">float</span>)a<span class="op">/</span>b <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"(int)f     = "</span> <span class="op">&lt;&lt;</span> (<span class="ty">int</span>)f    <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"(int)ch    = "</span> <span class="op">&lt;&lt;</span> (<span class="ty">int</span>)ch   <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+}
+</pre></div>
+  </div>
+  <div class="output-box">
+    <div class="section-label">// output</div>
+    <pre>=== Data Types ===    int:10  float:3.14  double:9.81  char:A  bool:1  PI:3.14159
+=== Arithmetic ===   a+b=13  a-b=7  a*b=30  a/b=3  a%b=1
+=== Typecasting ===  (float)a/b=3.33333  (int)f=3  (int)ch=65</pre>
+  </div>
+  <div class="page-footer"><span>// Program 01 of 15</span><span>C++ Lab Report</span></div>
+</div>
+
+
+<!-- ════ PROGRAM 2 ════ -->
+<div class="page">
+  <div class="prog-header">
+    <div class="prog-num c2">02</div>
+    <div class="prog-title-wrap">
+      <div class="aim-label">Aim / Objective</div>
+      <h2>Check Whether a Number is Prime, Palindrome, or Armstrong</h2>
+    </div>
+  </div>
+  <div class="section-label">// description</div>
+  <div class="desc-box">Use conditional and loop statements to check: (a) Prime – divisible by only 1 and itself, (b) Palindrome – reads same forwards and backwards, (c) Armstrong – sum of cubes of digits equals the number.</div>
+  <div class="section-label">// source code — program2.cpp</div>
+  <div class="code-wrap">
+    <div class="code-topbar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-lang">C++</span></div>
+    <div class="code-body"><pre>
+<span class="pp">#include&lt;iostream&gt;</span>
+<span class="pp">#include&lt;cmath&gt;</span>
+<span class="kw">using namespace</span> std<span class="op">;</span>
+
+<span class="cm">// Check Prime</span>
+<span class="ty">bool</span> <span class="fn">isPrime</span>(<span class="ty">int</span> n) {
+    <span class="kw">if</span> (n <span class="op">&lt;=</span> <span class="nm">1</span>) <span class="kw">return false</span><span class="op">;</span>
+    <span class="kw">for</span> (<span class="ty">int</span> i <span class="op">=</span> <span class="nm">2</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fn">sqrt</span>(n)<span class="op">;</span> i<span class="op">++</span>)
+        <span class="kw">if</span> (n <span class="op">%</span> i <span class="op">==</span> <span class="nm">0</span>) <span class="kw">return false</span><span class="op">;</span>
+    <span class="kw">return true</span><span class="op">;</span>
+}
+
+<span class="cm">// Check Palindrome</span>
+<span class="ty">bool</span> <span class="fn">isPalindrome</span>(<span class="ty">int</span> n) {
+    <span class="ty">int</span> orig <span class="op">=</span> n<span class="op">,</span> rev <span class="op">=</span> <span class="nm">0</span><span class="op">;</span>
+    <span class="kw">while</span> (n <span class="op">!=</span> <span class="nm">0</span>) {
+        rev <span class="op">=</span> rev <span class="op">*</span> <span class="nm">10</span> <span class="op">+</span> n <span class="op">%</span> <span class="nm">10</span><span class="op">;</span>
+        n <span class="op">/=</span> <span class="nm">10</span><span class="op">;</span>
+    }
+    <span class="kw">return</span> orig <span class="op">==</span> rev<span class="op">;</span>
+}
+
+<span class="cm">// Check Armstrong (3-digit)</span>
+<span class="ty">bool</span> <span class="fn">isArmstrong</span>(<span class="ty">int</span> n) {
+    <span class="ty">int</span> sum <span class="op">=</span> <span class="nm">0</span><span class="op">,</span> temp <span class="op">=</span> n<span class="op">;</span>
+    <span class="kw">while</span> (temp) {
+        <span class="ty">int</span> d <span class="op">=</span> temp <span class="op">%</span> <span class="nm">10</span><span class="op">;</span>
+        sum <span class="op">+=</span> d <span class="op">*</span> d <span class="op">*</span> d<span class="op">;</span>
+        temp <span class="op">/=</span> <span class="nm">10</span><span class="op">;</span>
+    }
+    <span class="kw">return</span> sum <span class="op">==</span> n<span class="op">;</span>
+}
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> num<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Enter a number: "</span><span class="op">;</span> cin <span class="op">&gt;&gt;</span> num<span class="op">;</span>
+
+    cout <span class="op">&lt;&lt;</span> num <span class="op">&lt;&lt;</span> (isPrime(num)     <span class="op">?</span> <span class="st">" is Prime\n"</span>     <span class="op">:</span> <span class="st">" is NOT Prime\n"</span>)<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> num <span class="op">&lt;&lt;</span> (isPalindrome(num) <span class="op">?</span> <span class="st">" is Palindrome\n"</span> <span class="op">:</span> <span class="st">" is NOT Palindrome\n"</span>)<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> num <span class="op">&lt;&lt;</span> (isArmstrong(num)  <span class="op">?</span> <span class="st">" is Armstrong\n"</span>  <span class="op">:</span> <span class="st">" is NOT Armstrong\n"</span>)<span class="op">;</span>
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+}
+</pre></div>
+  </div>
+  <div class="output-box">
+    <div class="section-label">// output (input: 153)</div>
+    <pre>Enter a number: 153
+153 is NOT Prime
+153 is NOT Palindrome
+153 is Armstrong</pre>
+  </div>
+  <div class="page-footer"><span>// Program 02 of 15</span><span>C++ Lab Report</span></div>
+</div>
+
+
+<!-- ════ PROGRAM 3 ════ -->
+<div class="page">
+  <div class="prog-header">
+    <div class="prog-num c3">03</div>
+    <div class="prog-title-wrap">
+      <div class="aim-label">Aim / Objective</div>
+      <h2>Menu-Driven Program: Arithmetic Operations &amp; Pattern Printing</h2>
+    </div>
+  </div>
+  <div class="section-label">// description</div>
+  <div class="desc-box">Use a switch-case menu to perform arithmetic operations (+, -, *, /). Additionally, print various patterns (pyramid, triangle) using nested for loops.</div>
+  <div class="section-label">// source code — program3.cpp</div>
+  <div class="code-wrap">
+    <div class="code-topbar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-lang">C++</span></div>
+    <div class="code-body"><pre>
+<span class="pp">#include&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std<span class="op">;</span>
+
+<span class="ty">void</span> <span class="fn">printPattern</span>(<span class="ty">int</span> n) {
+    cout <span class="op">&lt;&lt;</span> <span class="st">"\n--- Star Pattern ---\n"</span><span class="op">;</span>
+    <span class="kw">for</span> (<span class="ty">int</span> i <span class="op">=</span> <span class="nm">1</span><span class="op">;</span> i <span class="op">&lt;=</span> n<span class="op">;</span> i<span class="op">++</span>) {
+        <span class="kw">for</span> (<span class="ty">int</span> j <span class="op">=</span> n<span class="op">;</span> j <span class="op">&gt;</span> i<span class="op">;</span> j<span class="op">--</span>) cout <span class="op">&lt;&lt;</span> <span class="st">" "</span><span class="op">;</span>
+        <span class="kw">for</span> (<span class="ty">int</span> k <span class="op">=</span> <span class="nm">1</span><span class="op">;</span> k <span class="op">&lt;=</span> <span class="nm">2</span><span class="op">*</span>i<span class="op">-</span><span class="nm">1</span><span class="op">;</span> k<span class="op">++</span>) cout <span class="op">&lt;&lt;</span> <span class="st">"*"</span><span class="op">;</span>
+        cout <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    }
+}
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> ch<span class="op">,</span> a<span class="op">,</span> b<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"=== MENU ===\n"</span>
+         <span class="op">&lt;&lt;</span> <span class="st">"1. Addition\n2. Subtraction\n"</span>
+         <span class="op">&lt;&lt;</span> <span class="st">"3. Multiply\n4. Division\n5. Pattern\n"</span>
+         <span class="op">&lt;&lt;</span> <span class="st">"Enter choice: "</span><span class="op">;</span>
+    cin <span class="op">&gt;&gt;</span> ch<span class="op">;</span>
+
+    <span class="kw">switch</span>(ch) {
+        <span class="kw">case</span> <span class="nm">1</span><span class="op">:</span> cin <span class="op">&gt;&gt;</span> a <span class="op">&gt;&gt;</span> b<span class="op">;</span> cout <span class="op">&lt;&lt;</span> <span class="st">"Sum = "</span> <span class="op">&lt;&lt;</span> a<span class="op">+</span>b<span class="op">;</span> <span class="kw">break</span><span class="op">;</span>
+        <span class="kw">case</span> <span class="nm">2</span><span class="op">:</span> cin <span class="op">&gt;&gt;</span> a <span class="op">&gt;&gt;</span> b<span class="op">;</span> cout <span class="op">&lt;&lt;</span> <span class="st">"Diff = "</span> <span class="op">&lt;&lt;</span> a<span class="op">-</span>b<span class="op">;</span> <span class="kw">break</span><span class="op">;</span>
+        <span class="kw">case</span> <span class="nm">3</span><span class="op">:</span> cin <span class="op">&gt;&gt;</span> a <span class="op">&gt;&gt;</span> b<span class="op">;</span> cout <span class="op">&lt;&lt;</span> <span class="st">"Prod = "</span> <span class="op">&lt;&lt;</span> a<span class="op">*</span>b<span class="op">;</span> <span class="kw">break</span><span class="op">;</span>
+        <span class="kw">case</span> <span class="nm">4</span><span class="op">:</span> cin <span class="op">&gt;&gt;</span> a <span class="op">&gt;&gt;</span> b<span class="op">;</span>
+            <span class="kw">if</span>(b<span class="op">==</span><span class="nm">0</span>) cout <span class="op">&lt;&lt;</span> <span class="st">"Division by zero!"</span><span class="op">;</span>
+            <span class="kw">else</span> cout <span class="op">&lt;&lt;</span> <span class="st">"Quot = "</span> <span class="op">&lt;&lt;</span> (<span class="ty">float</span>)a<span class="op">/</span>b<span class="op">;</span> <span class="kw">break</span><span class="op">;</span>
+        <span class="kw">case</span> <span class="nm">5</span><span class="op">:</span> <span class="fn">printPattern</span>(<span class="nm">5</span>)<span class="op">;</span> <span class="kw">break</span><span class="op">;</span>
+        <span class="kw">default</span><span class="op">:</span> cout <span class="op">&lt;&lt;</span> <span class="st">"Invalid choice!"</span><span class="op">;</span>
+    }
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+}
+</pre></div>
+  </div>
+  <div class="output-box">
+    <div class="section-label">// output (choice: 5 — pattern)</div>
+    <pre>    *          (Pattern for n=5)
+   ***
+  *****
+ *******
+*********</pre>
+  </div>
+  <div class="page-footer"><span>// Program 03 of 15</span><span>C++ Lab Report</span></div>
+</div>
+
+
+<!-- ════ PROGRAM 4 ════ -->
+<div class="page">
+  <div class="prog-header">
+    <div class="prog-num c4">04</div>
+    <div class="prog-title-wrap">
+      <div class="aim-label">Aim / Objective</div>
+      <h2>Passing Parameters to Functions by Value and by Reference</h2>
+    </div>
+  </div>
+  <div class="section-label">// description</div>
+  <div class="desc-box">Demonstrate pass-by-value (copy is passed; original unchanged) vs pass-by-reference (alias is passed; original can be modified). Use swap as a classic example.</div>
+  <div class="section-label">// source code — program4.cpp</div>
+  <div class="code-wrap">
+    <div class="code-topbar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-lang">C++</span></div>
+    <div class="code-body"><pre>
+<span class="pp">#include&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std<span class="op">;</span>
+
+<span class="cm">// Pass by Value — original unchanged</span>
+<span class="ty">void</span> <span class="fn">swapByValue</span>(<span class="ty">int</span> x<span class="op">,</span> <span class="ty">int</span> y) {
+    <span class="ty">int</span> temp <span class="op">=</span> x<span class="op">;</span>
+    x <span class="op">=</span> y<span class="op">;</span>
+    y <span class="op">=</span> temp<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Inside swapByValue: x="</span> <span class="op">&lt;&lt;</span> x <span class="op">&lt;&lt;</span> <span class="st">" y="</span> <span class="op">&lt;&lt;</span> y <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+}
+
+<span class="cm">// Pass by Reference — original modified</span>
+<span class="ty">void</span> <span class="fn">swapByRef</span>(<span class="ty">int</span> <span class="op">&amp;</span>x<span class="op">,</span> <span class="ty">int</span> <span class="op">&amp;</span>y) {
+    <span class="ty">int</span> temp <span class="op">=</span> x<span class="op">;</span>
+    x <span class="op">=</span> y<span class="op">;</span>
+    y <span class="op">=</span> temp<span class="op">;</span>
+}
+
+<span class="cm">// Demonstrate with area calculation</span>
+<span class="ty">void</span> <span class="fn">squareByValue</span>(<span class="ty">int</span> n)   { n <span class="op">*=</span> n<span class="op">;</span> cout <span class="op">&lt;&lt;</span> <span class="st">"ByVal inside: "</span> <span class="op">&lt;&lt;</span> n <span class="op">&lt;&lt;</span> endl<span class="op">;</span> }
+<span class="ty">void</span> <span class="fn">squareByRef</span> (<span class="ty">int</span> <span class="op">&amp;</span>n)  { n <span class="op">*=</span> n<span class="op">;</span> }
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> a <span class="op">=</span> <span class="nm">5</span><span class="op">,</span> b <span class="op">=</span> <span class="nm">10</span><span class="op">;</span>
+
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Before: a="</span> <span class="op">&lt;&lt;</span> a <span class="op">&lt;&lt;</span> <span class="st">" b="</span> <span class="op">&lt;&lt;</span> b <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    <span class="fn">swapByValue</span>(a<span class="op">,</span> b)<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"After swapByValue: a="</span> <span class="op">&lt;&lt;</span> a <span class="op">&lt;&lt;</span> <span class="st">" b="</span> <span class="op">&lt;&lt;</span> b <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+
+    <span class="fn">swapByRef</span>(a<span class="op">,</span> b)<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"After swapByRef:   a="</span> <span class="op">&lt;&lt;</span> a <span class="op">&lt;&lt;</span> <span class="st">" b="</span> <span class="op">&lt;&lt;</span> b <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+
+    <span class="ty">int</span> num <span class="op">=</span> <span class="nm">4</span><span class="op">;</span>
+    <span class="fn">squareByValue</span>(num)<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"After squareByValue: num="</span> <span class="op">&lt;&lt;</span> num <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    <span class="fn">squareByRef</span>(num)<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"After squareByRef:   num="</span> <span class="op">&lt;&lt;</span> num <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+}
+</pre></div>
+  </div>
+  <div class="output-box">
+    <div class="section-label">// output</div>
+    <pre>Before: a=5 b=10
+Inside swapByValue: x=10 y=5
+After swapByValue: a=5 b=10       ← original unchanged
+After swapByRef:   a=10 b=5       ← original modified
+ByVal inside: 16  |  After squareByValue: num=4   ← unchanged
+After squareByRef: num=16          ← modified</pre>
+  </div>
+  <div class="page-footer"><span>// Program 04 of 15</span><span>C++ Lab Report</span></div>
+</div>
+
+
+<!-- ════ PROGRAM 5 ════ -->
+<div class="page">
+  <div class="prog-header">
+    <div class="prog-num c5">05</div>
+    <div class="prog-title-wrap">
+      <div class="aim-label">Aim / Objective</div>
+      <h2>Overloaded Functions to Calculate Area of Different Shapes</h2>
+    </div>
+  </div>
+  <div class="section-label">// description</div>
+  <div class="desc-box">Use function overloading — same function name <code>area()</code> with different parameter lists — to compute area of circle (1 arg), rectangle (2 args), and triangle (3 args / base-height).</div>
+  <div class="section-label">// source code — program5.cpp</div>
+  <div class="code-wrap">
+    <div class="code-topbar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-lang">C++</span></div>
+    <div class="code-body"><pre>
+<span class="pp">#include&lt;iostream&gt;</span>
+<span class="pp">#include&lt;cmath&gt;</span>
+<span class="kw">using namespace</span> std<span class="op">;</span>
+
+<span class="kw">const</span> <span class="ty">double</span> PI <span class="op">=</span> <span class="nm">3.14159265</span><span class="op">;</span>
+
+<span class="cm">// Overload 1: Circle — one argument (radius)</span>
+<span class="ty">double</span> <span class="fn">area</span>(<span class="ty">double</span> r) {
+    <span class="kw">return</span> PI <span class="op">*</span> r <span class="op">*</span> r<span class="op">;</span>
+}
+
+<span class="cm">// Overload 2: Rectangle — two arguments (length, breadth)</span>
+<span class="ty">double</span> <span class="fn">area</span>(<span class="ty">double</span> l<span class="op">,</span> <span class="ty">double</span> b) {
+    <span class="kw">return</span> l <span class="op">*</span> b<span class="op">;</span>
+}
+
+<span class="cm">// Overload 3: Triangle — three sides (Heron's formula)</span>
+<span class="ty">double</span> <span class="fn">area</span>(<span class="ty">double</span> a<span class="op">,</span> <span class="ty">double</span> b<span class="op">,</span> <span class="ty">double</span> c) {
+    <span class="ty">double</span> s <span class="op">=</span> (a <span class="op">+</span> b <span class="op">+</span> c) <span class="op">/</span> <span class="nm">2.0</span><span class="op">;</span>
+    <span class="kw">return</span> <span class="fn">sqrt</span>(s <span class="op">*</span> (s<span class="op">-</span>a) <span class="op">*</span> (s<span class="op">-</span>b) <span class="op">*</span> (s<span class="op">-</span>c))<span class="op">;</span>
+}
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    cout <span class="op">&lt;&lt;</span> <span class="st">fixed</span><span class="op">;</span>
+    cout<span class="op">.</span><span class="fn">precision</span>(<span class="nm">4</span>)<span class="op">;</span>
+
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Area of Circle    (r=5)        = "</span>
+         <span class="op">&lt;&lt;</span> <span class="fn">area</span>(<span class="nm">5.0</span>)            <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Area of Rectangle (4 x 6)      = "</span>
+         <span class="op">&lt;&lt;</span> <span class="fn">area</span>(<span class="nm">4.0</span><span class="op">,</span> <span class="nm">6.0</span>)       <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Area of Triangle  (3, 4, 5)    = "</span>
+         <span class="op">&lt;&lt;</span> <span class="fn">area</span>(<span class="nm">3.0</span><span class="op">,</span> <span class="nm">4.0</span><span class="op">,</span> <span class="nm">5.0</span>) <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+}
+</pre></div>
+  </div>
+  <div class="output-box">
+    <div class="section-label">// output</div>
+    <pre>Area of Circle    (r=5)     = 78.5398
+Area of Rectangle (4 x 6)  = 24.0000
+Area of Triangle  (3, 4, 5) = 6.0000</pre>
+  </div>
+  <div class="page-footer"><span>// Program 05 of 15</span><span>C++ Lab Report</span></div>
+</div>
+
+
+<!-- ════ PROGRAM 6 ════ -->
+<div class="page">
+  <div class="prog-header">
+    <div class="prog-num c6">06</div>
+    <div class="prog-title-wrap">
+      <div class="aim-label">Aim / Objective</div>
+      <h2>Define a Structure and a Class to Store and Display Student Details</h2>
+    </div>
+  </div>
+  <div class="section-label">// description</div>
+  <div class="desc-box">Implement student record using both a <code>struct</code> (all members public by default) and a <code>class</code> (members private; accessed via methods). Display student name, roll number, and marks.</div>
+  <div class="section-label">// source code — program6.cpp</div>
+  <div class="code-wrap">
+    <div class="code-topbar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-lang">C++</span></div>
+    <div class="code-body"><pre>
+<span class="pp">#include&lt;iostream&gt;</span>
+<span class="pp">#include&lt;string&gt;</span>
+<span class="kw">using namespace</span> std<span class="op">;</span>
+
+<span class="cm">// ── Structure ──────────────────────────</span>
+<span class="kw">struct</span> StudentStruct {
+    <span class="ty">string</span> name<span class="op">;</span>
+    <span class="ty">int</span>    roll<span class="op">;</span>
+    <span class="ty">float</span>  marks<span class="op">;</span>
+    <span class="ty">void</span> <span class="fn">display</span>() {
+        cout <span class="op">&lt;&lt;</span> <span class="st">"[Struct] Name:"</span> <span class="op">&lt;&lt;</span> name
+             <span class="op">&lt;&lt;</span> <span class="st">"  Roll:"</span> <span class="op">&lt;&lt;</span> roll
+             <span class="op">&lt;&lt;</span> <span class="st">"  Marks:"</span> <span class="op">&lt;&lt;</span> marks <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    }
+}<span class="op">;</span>
+
+<span class="cm">// ── Class ──────────────────────────────</span>
+<span class="kw">class</span> StudentClass {
+<span class="kw">private</span><span class="op">:</span>
+    <span class="ty">string</span> name<span class="op">;</span>
+    <span class="ty">int</span>    roll<span class="op">;</span>
+    <span class="ty">float</span>  marks<span class="op">;</span>
+<span class="kw">public</span><span class="op">:</span>
+    <span class="ty">void</span> <span class="fn">setData</span>(<span class="ty">string</span> n<span class="op">,</span> <span class="ty">int</span> r<span class="op">,</span> <span class="ty">float</span> m) {
+        name <span class="op">=</span> n<span class="op">;</span> roll <span class="op">=</span> r<span class="op">;</span> marks <span class="op">=</span> m<span class="op">;</span>
+    }
+    <span class="ty">void</span> <span class="fn">display</span>() {
+        cout <span class="op">&lt;&lt;</span> <span class="st">"[Class] Name:"</span> <span class="op">&lt;&lt;</span> name
+             <span class="op">&lt;&lt;</span> <span class="st">"  Roll:"</span> <span class="op">&lt;&lt;</span> roll
+             <span class="op">&lt;&lt;</span> <span class="st">"  Marks:"</span> <span class="op">&lt;&lt;</span> marks <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    }
+}<span class="op">;</span>
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    StudentStruct s1 <span class="op">=</span> {<span class="st">"Jitesh"</span><span class="op">,</span> <span class="nm">101</span><span class="op">,</span> <span class="nm">92.5f</span>}<span class="op">;</span>
+    s1<span class="op">.</span><span class="fn">display</span>()<span class="op">;</span>
+
+    StudentClass s2<span class="op">;</span>
+    s2<span class="op">.</span><span class="fn">setData</span>(<span class="st">"Rahul"</span><span class="op">,</span> <span class="nm">102</span><span class="op">,</span> <span class="nm">88.0f</span>)<span class="op">;</span>
+    s2<span class="op">.</span><span class="fn">display</span>()<span class="op">;</span>
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+}
+</pre></div>
+  </div>
+  <div class="output-box">
+    <div class="section-label">// output</div>
+    <pre>[Struct] Name: Jitesh  Roll: 101  Marks: 92.5
+[Class]  Name: Rahul   Roll: 102  Marks: 88</pre>
+  </div>
+  <div class="page-footer"><span>// Program 06 of 15</span><span>C++ Lab Report</span></div>
+</div>
+
+
+<!-- ════ PROGRAM 7 ════ -->
+<div class="page">
+  <div class="prog-header">
+    <div class="prog-num c1">07</div>
+    <div class="prog-title-wrap">
+      <div class="aim-label">Aim / Objective</div>
+      <h2>Class with Default &amp; Parameterized Constructors and Destructor</h2>
+    </div>
+  </div>
+  <div class="section-label">// description</div>
+  <div class="desc-box">Implement a class <code>Box</code> with a default constructor (initializes default dimensions), a parameterized constructor, and a destructor. Demonstrate object lifecycle messages.</div>
+  <div class="section-label">// source code — program7.cpp</div>
+  <div class="code-wrap">
+    <div class="code-topbar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-lang">C++</span></div>
+    <div class="code-body"><pre>
+<span class="pp">#include&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std<span class="op">;</span>
+
+<span class="kw">class</span> Box {
+<span class="kw">private</span><span class="op">:</span>
+    <span class="ty">double</span> length<span class="op">,</span> width<span class="op">,</span> height<span class="op">;</span>
+
+<span class="kw">public</span><span class="op">:</span>
+    <span class="cm">// Default Constructor</span>
+    <span class="fn">Box</span>() <span class="op">:</span> <span class="fn">length</span>(<span class="nm">1</span>)<span class="op">,</span> <span class="fn">width</span>(<span class="nm">1</span>)<span class="op">,</span> <span class="fn">height</span>(<span class="nm">1</span>) {
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Default Constructor called\n"</span><span class="op">;</span>
+    }
+
+    <span class="cm">// Parameterized Constructor</span>
+    <span class="fn">Box</span>(<span class="ty">double</span> l<span class="op">,</span> <span class="ty">double</span> w<span class="op">,</span> <span class="ty">double</span> h)
+        <span class="op">:</span> <span class="fn">length</span>(l)<span class="op">,</span> <span class="fn">width</span>(w)<span class="op">,</span> <span class="fn">height</span>(h) {
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Parameterized Constructor called\n"</span><span class="op">;</span>
+    }
+
+    <span class="cm">// Destructor</span>
+    <span class="op">~</span><span class="fn">Box</span>() {
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Destructor called for Box("</span>
+             <span class="op">&lt;&lt;</span> length <span class="op">&lt;&lt;</span> <span class="st">","</span> <span class="op">&lt;&lt;</span> width <span class="op">&lt;&lt;</span> <span class="st">","</span> <span class="op">&lt;&lt;</span> height <span class="op">&lt;&lt;</span> <span class="st">")\n"</span><span class="op">;</span>
+    }
+
+    <span class="ty">double</span> <span class="fn">volume</span>() { <span class="kw">return</span> length <span class="op">*</span> width <span class="op">*</span> height<span class="op">;</span> }
+
+    <span class="ty">void</span> <span class="fn">display</span>() {
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Dimensions: "</span> <span class="op">&lt;&lt;</span> length <span class="op">&lt;&lt;</span> <span class="st">"x"</span>
+             <span class="op">&lt;&lt;</span> width <span class="op">&lt;&lt;</span> <span class="st">"x"</span> <span class="op">&lt;&lt;</span> height
+             <span class="op">&lt;&lt;</span> <span class="st">"  Volume: "</span> <span class="op">&lt;&lt;</span> <span class="fn">volume</span>() <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    }
+}<span class="op">;</span>
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    Box b1<span class="op">;</span>               <span class="cm">// Default constructor</span>
+    b1<span class="op">.</span><span class="fn">display</span>()<span class="op">;</span>
+
+    Box b2(<span class="nm">3.0</span><span class="op">,</span> <span class="nm">4.0</span><span class="op">,</span> <span class="nm">5.0</span>)<span class="op">;</span>  <span class="cm">// Parameterized constructor</span>
+    b2<span class="op">.</span><span class="fn">display</span>()<span class="op">;</span>
+
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>             <span class="cm">// Destructors called automatically</span>
+}
+</pre></div>
+  </div>
+  <div class="output-box">
+    <div class="section-label">// output</div>
+    <pre>Default Constructor called
+Dimensions: 1x1x1  Volume: 1
+Parameterized Constructor called
+Dimensions: 3x4x5  Volume: 60
+Destructor called for Box(3,4,5)
+Destructor called for Box(1,1,1)</pre>
+  </div>
+  <div class="page-footer"><span>// Program 07 of 15</span><span>C++ Lab Report</span></div>
+</div>
+
+
+<!-- ════ PROGRAM 8 ════ -->
+<div class="page">
+  <div class="prog-header">
+    <div class="prog-num c2">08</div>
+    <div class="prog-title-wrap">
+      <div class="aim-label">Aim / Objective</div>
+      <h2>Class Account with Private Data Members and Getter/Setter Methods</h2>
+    </div>
+  </div>
+  <div class="section-label">// description</div>
+  <div class="desc-box">Create a <code>BankAccount</code> class with private attributes (account number, holder name, balance). Provide getter/setter methods and operations like deposit and withdraw to demonstrate encapsulation.</div>
+  <div class="section-label">// source code — program8.cpp</div>
+  <div class="code-wrap">
+    <div class="code-topbar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-lang">C++</span></div>
+    <div class="code-body"><pre>
+<span class="pp">#include&lt;iostream&gt;</span>
+<span class="pp">#include&lt;string&gt;</span>
+<span class="kw">using namespace</span> std<span class="op">;</span>
+
+<span class="kw">class</span> BankAccount {
+<span class="kw">private</span><span class="op">:</span>
+    <span class="ty">int</span>    accNo<span class="op">;</span>
+    <span class="ty">string</span> holder<span class="op">;</span>
+    <span class="ty">double</span> balance<span class="op">;</span>
+
+<span class="kw">public</span><span class="op">:</span>
+    <span class="cm">// Setters</span>
+    <span class="ty">void</span> <span class="fn">setAccNo</span>  (<span class="ty">int</span> n)    { accNo   <span class="op">=</span> n<span class="op">;</span> }
+    <span class="ty">void</span> <span class="fn">setHolder</span> (<span class="ty">string</span> h) { holder  <span class="op">=</span> h<span class="op">;</span> }
+    <span class="ty">void</span> <span class="fn">setBalance</span>(<span class="ty">double</span> b) { balance <span class="op">=</span> (b <span class="op">&gt;=</span> <span class="nm">0</span>) <span class="op">?</span> b <span class="op">:</span> <span class="nm">0</span><span class="op">;</span> }
+
+    <span class="cm">// Getters</span>
+    <span class="ty">int</span>    <span class="fn">getAccNo</span>  () { <span class="kw">return</span> accNo<span class="op">;</span>   }
+    <span class="ty">string</span> <span class="fn">getHolder</span> () { <span class="kw">return</span> holder<span class="op">;</span>  }
+    <span class="ty">double</span> <span class="fn">getBalance</span>() { <span class="kw">return</span> balance<span class="op">;</span> }
+
+    <span class="ty">void</span> <span class="fn">deposit</span>(<span class="ty">double</span> amt) {
+        <span class="kw">if</span> (amt <span class="op">&gt;</span> <span class="nm">0</span>) { balance <span class="op">+=</span> amt<span class="op">;</span> cout <span class="op">&lt;&lt;</span> <span class="st">"Deposited: "</span> <span class="op">&lt;&lt;</span> amt <span class="op">&lt;&lt;</span> endl<span class="op">;</span> }
+        <span class="kw">else</span> cout <span class="op">&lt;&lt;</span> <span class="st">"Invalid deposit amount!\n"</span><span class="op">;</span>
+    }
+
+    <span class="ty">void</span> <span class="fn">withdraw</span>(<span class="ty">double</span> amt) {
+        <span class="kw">if</span> (amt <span class="op">&lt;=</span> balance) { balance <span class="op">-=</span> amt<span class="op">;</span> cout <span class="op">&lt;&lt;</span> <span class="st">"Withdrawn: "</span> <span class="op">&lt;&lt;</span> amt <span class="op">&lt;&lt;</span> endl<span class="op">;</span> }
+        <span class="kw">else</span> cout <span class="op">&lt;&lt;</span> <span class="st">"Insufficient balance!\n"</span><span class="op">;</span>
+    }
+
+    <span class="ty">void</span> <span class="fn">display</span>() {
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Acc:"</span> <span class="op">&lt;&lt;</span> accNo <span class="op">&lt;&lt;</span> <span class="st">"  Holder:"</span> <span class="op">&lt;&lt;</span> holder
+             <span class="op">&lt;&lt;</span> <span class="st">"  Balance: Rs."</span> <span class="op">&lt;&lt;</span> balance <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    }
+}<span class="op">;</span>
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    BankAccount acc<span class="op">;</span>
+    acc<span class="op">.</span><span class="fn">setAccNo</span>(<span class="nm">1001</span>)<span class="op">;</span> acc<span class="op">.</span><span class="fn">setHolder</span>(<span class="st">"Jitesh"</span>)<span class="op">;</span> acc<span class="op">.</span><span class="fn">setBalance</span>(<span class="nm">5000</span>)<span class="op">;</span>
+    acc<span class="op">.</span><span class="fn">display</span>()<span class="op">;</span>
+    acc<span class="op">.</span><span class="fn">deposit</span>(<span class="nm">2000</span>)<span class="op">;</span>
+    acc<span class="op">.</span><span class="fn">withdraw</span>(<span class="nm">1500</span>)<span class="op">;</span>
+    acc<span class="op">.</span><span class="fn">display</span>()<span class="op">;</span>
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+}
+</pre></div>
+  </div>
+  <div class="output-box">
+    <div class="section-label">// output</div>
+    <pre>Acc:1001  Holder:Jitesh  Balance: Rs.5000
+Deposited: 2000
+Withdrawn: 1500
+Acc:1001  Holder:Jitesh  Balance: Rs.5500</pre>
+  </div>
+  <div class="page-footer"><span>// Program 08 of 15</span><span>C++ Lab Report</span></div>
+</div>
+
+
+<!-- ════ PROGRAM 9 ════ -->
+<div class="page">
+  <div class="prog-header">
+    <div class="prog-num c3">09</div>
+    <div class="prog-title-wrap">
+      <div class="aim-label">Aim / Objective</div>
+      <h2>Overload Binary (+) and Unary (−) Operators for a Complex Class</h2>
+    </div>
+  </div>
+  <div class="section-label">// description</div>
+  <div class="desc-box">Implement a <code>Complex</code> number class and overload the binary <code>+</code> operator to add two complex numbers, and the unary <code>-</code> operator to negate a complex number.</div>
+  <div class="section-label">// source code — program9.cpp</div>
+  <div class="code-wrap">
+    <div class="code-topbar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-lang">C++</span></div>
+    <div class="code-body"><pre>
+<span class="pp">#include&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std<span class="op">;</span>
+
+<span class="kw">class</span> Complex {
+<span class="kw">public</span><span class="op">:</span>
+    <span class="ty">double</span> real<span class="op">,</span> imag<span class="op">;</span>
+
+    <span class="fn">Complex</span>(<span class="ty">double</span> r <span class="op">=</span> <span class="nm">0</span><span class="op">,</span> <span class="ty">double</span> i <span class="op">=</span> <span class="nm">0</span>) <span class="op">:</span> <span class="fn">real</span>(r)<span class="op">,</span> <span class="fn">imag</span>(i) {}
+
+    <span class="cm">// Binary + operator overload</span>
+    Complex <span class="kw">operator</span><span class="op">+</span>(<span class="kw">const</span> Complex<span class="op">&amp;</span> c) <span class="kw">const</span> {
+        <span class="kw">return</span> <span class="fn">Complex</span>(real <span class="op">+</span> c<span class="op">.</span>real<span class="op">,</span> imag <span class="op">+</span> c<span class="op">.</span>imag)<span class="op">;</span>
+    }
+
+    <span class="cm">// Unary - operator overload</span>
+    Complex <span class="kw">operator</span><span class="op">-</span>() <span class="kw">const</span> {
+        <span class="kw">return</span> <span class="fn">Complex</span>(<span class="op">-</span>real<span class="op">,</span> <span class="op">-</span>imag)<span class="op">;</span>
+    }
+
+    <span class="cm">// Binary - operator overload (subtraction)</span>
+    Complex <span class="kw">operator</span><span class="op">-</span>(<span class="kw">const</span> Complex<span class="op">&amp;</span> c) <span class="kw">const</span> {
+        <span class="kw">return</span> <span class="fn">Complex</span>(real <span class="op">-</span> c<span class="op">.</span>real<span class="op">,</span> imag <span class="op">-</span> c<span class="op">.</span>imag)<span class="op">;</span>
+    }
+
+    <span class="ty">void</span> <span class="fn">display</span>(<span class="ty">string</span> label) <span class="kw">const</span> {
+        cout <span class="op">&lt;&lt;</span> label <span class="op">&lt;&lt;</span> real
+             <span class="op">&lt;&lt;</span> (imag <span class="op">&gt;=</span> <span class="nm">0</span> <span class="op">?</span> <span class="st">" + "</span> <span class="op">:</span> <span class="st">" - "</span>)
+             <span class="op">&lt;&lt;</span> <span class="fn">abs</span>(imag) <span class="op">&lt;&lt;</span> <span class="st">"i\n"</span><span class="op">;</span>
+    }
+}<span class="op">;</span>
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    Complex c1(<span class="nm">3.0</span><span class="op">,</span> <span class="nm">4.0</span>)<span class="op">,</span> c2(<span class="nm">1.5</span><span class="op">,</span> <span class="op">-</span><span class="nm">2.5</span>)<span class="op">;</span>
+    c1<span class="op">.</span><span class="fn">display</span>(<span class="st">"c1 = "</span>)<span class="op">;</span>
+    c2<span class="op">.</span><span class="fn">display</span>(<span class="st">"c2 = "</span>)<span class="op">;</span>
+    (c1 <span class="op">+</span> c2)<span class="op">.</span><span class="fn">display</span>(<span class="st">"c1 + c2 = "</span>)<span class="op">;</span>
+    (c1 <span class="op">-</span> c2)<span class="op">.</span><span class="fn">display</span>(<span class="st">"c1 - c2 = "</span>)<span class="op">;</span>
+    (<span class="op">-</span>c1)<span class="op">.</span><span class="fn">display</span>(<span class="st">"  -c1  = "</span>)<span class="op">;</span>
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+}
+</pre></div>
+  </div>
+  <div class="output-box">
+    <div class="section-label">// output</div>
+    <pre>c1     = 3 + 4i
+c2     = 1.5 - 2.5i
+c1+c2  = 4.5 + 1.5i
+c1-c2  = 1.5 + 6.5i
+-c1    = -3 - 4i</pre>
+  </div>
+  <div class="page-footer"><span>// Program 09 of 15</span><span>C++ Lab Report</span></div>
+</div>
+
+
+<!-- ════ PROGRAM 10 ════ -->
+<div class="page">
+  <div class="prog-header">
+    <div class="prog-num c4">10</div>
+    <div class="prog-title-wrap">
+      <div class="aim-label">Aim / Objective</div>
+      <h2>Single and Multiple Inheritance Using Base and Derived Classes</h2>
+    </div>
+  </div>
+  <div class="section-label">// description</div>
+  <div class="desc-box">Demonstrate single inheritance (one base → one derived) and multiple inheritance (two bases → one derived). A <code>Person</code> base and <code>Employee</code>/<code>Student</code> derived classes are used.</div>
+  <div class="section-label">// source code — program10.cpp</div>
+  <div class="code-wrap">
+    <div class="code-topbar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-lang">C++</span></div>
+    <div class="code-body"><pre>
+<span class="pp">#include&lt;iostream&gt;</span>
+<span class="pp">#include&lt;string&gt;</span>
+<span class="kw">using namespace</span> std<span class="op">;</span>
+
+<span class="cm">// Base class 1</span>
+<span class="kw">class</span> Person {
+<span class="kw">public</span><span class="op">:</span>
+    <span class="ty">string</span> name<span class="op">;</span>  <span class="ty">int</span> age<span class="op">;</span>
+    <span class="ty">void</span> <span class="fn">showPerson</span>() {
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Name: "</span> <span class="op">&lt;&lt;</span> name <span class="op">&lt;&lt;</span> "  Age: " <span class="op">&lt;&lt;</span> age <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    }
+}<span class="op">;</span>
+
+<span class="cm">// Base class 2</span>
+<span class="kw">class</span> Academic {
+<span class="kw">public</span><span class="op">:</span>
+    <span class="ty">string</span> dept<span class="op">;</span>
+    <span class="ty">void</span> <span class="fn">showDept</span>() { cout <span class="op">&lt;&lt;</span> <span class="st">"Dept: "</span> <span class="op">&lt;&lt;</span> dept <span class="op">&lt;&lt;</span> endl<span class="op">;</span> }
+}<span class="op">;</span>
+
+<span class="cm">// Single Inheritance: Person → Employee</span>
+<span class="kw">class</span> Employee <span class="op">:</span> <span class="kw">public</span> Person {
+<span class="kw">public</span><span class="op">:</span>
+    <span class="ty">double</span> salary<span class="op">;</span>
+    <span class="ty">void</span> <span class="fn">showEmployee</span>() {
+        <span class="fn">showPerson</span>()<span class="op">;</span>
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Salary: "</span> <span class="op">&lt;&lt;</span> salary <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    }
+}<span class="op">;</span>
+
+<span class="cm">// Multiple Inheritance: Person + Academic → Student</span>
+<span class="kw">class</span> Student <span class="op">:</span> <span class="kw">public</span> Person<span class="op">,</span> <span class="kw">public</span> Academic {
+<span class="kw">public</span><span class="op">:</span>
+    <span class="ty">int</span> rollNo<span class="op">;</span>
+    <span class="ty">void</span> <span class="fn">showStudent</span>() {
+        <span class="fn">showPerson</span>()<span class="op">;</span>  <span class="fn">showDept</span>()<span class="op">;</span>
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Roll: "</span> <span class="op">&lt;&lt;</span> rollNo <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    }
+}<span class="op">;</span>
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    Employee e<span class="op">;</span>
+    e<span class="op">.</span>name <span class="op">=</span> <span class="st">"Ankit"</span><span class="op">;</span> e<span class="op">.</span>age <span class="op">=</span> <span class="nm">30</span><span class="op">;</span> e<span class="op">.</span>salary <span class="op">=</span> <span class="nm">55000</span><span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"-- Single Inheritance --\n"</span><span class="op">;</span>
+    e<span class="op">.</span><span class="fn">showEmployee</span>()<span class="op">;</span>
+
+    Student s<span class="op">;</span>
+    s<span class="op">.</span>name <span class="op">=</span> <span class="st">"Jitesh"</span><span class="op">;</span> s<span class="op">.</span>age <span class="op">=</span> <span class="nm">20</span><span class="op">;</span>
+    s<span class="op">.</span>dept <span class="op">=</span> <span class="st">"ECE"</span><span class="op">;</span>      s<span class="op">.</span>rollNo <span class="op">=</span> <span class="nm">101</span><span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"\n-- Multiple Inheritance --\n"</span><span class="op">;</span>
+    s<span class="op">.</span><span class="fn">showStudent</span>()<span class="op">;</span>
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+}
+</pre></div>
+  </div>
+  <div class="output-box">
+    <div class="section-label">// output</div>
+    <pre>-- Single Inheritance --
+Name: Ankit  Age: 30  Salary: 55000
+-- Multiple Inheritance --
+Name: Jitesh  Age: 20  Dept: ECE  Roll: 101</pre>
+  </div>
+  <div class="page-footer"><span>// Program 10 of 15</span><span>C++ Lab Report</span></div>
+</div>
+
+
+<!-- ════ PROGRAM 11 ════ -->
+<div class="page">
+  <div class="prog-header">
+    <div class="prog-num c5">11</div>
+    <div class="prog-title-wrap">
+      <div class="aim-label">Aim / Objective</div>
+      <h2>Runtime Polymorphism Using Virtual Functions</h2>
+    </div>
+  </div>
+  <div class="section-label">// description</div>
+  <div class="desc-box">Use virtual functions and a base class pointer to demonstrate runtime polymorphism (late binding). The correct overridden function is called based on the actual object type, not the pointer type.</div>
+  <div class="section-label">// source code — program11.cpp</div>
+  <div class="code-wrap">
+    <div class="code-topbar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-lang">C++</span></div>
+    <div class="code-body"><pre>
+<span class="pp">#include&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std<span class="op">;</span>
+
+<span class="kw">class</span> Shape {
+<span class="kw">public</span><span class="op">:</span>
+    <span class="kw">virtual</span> <span class="ty">void</span> <span class="fn">draw</span>() {
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Drawing a generic Shape\n"</span><span class="op">;</span>
+    }
+    <span class="kw">virtual</span> <span class="ty">double</span> <span class="fn">area</span>() { <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span> }
+    <span class="kw">virtual</span> <span class="op">~</span><span class="fn">Shape</span>() {}  <span class="cm">// Virtual destructor</span>
+}<span class="op">;</span>
+
+<span class="kw">class</span> Circle <span class="op">:</span> <span class="kw">public</span> Shape {
+    <span class="ty">double</span> r<span class="op">;</span>
+<span class="kw">public</span><span class="op">:</span>
+    <span class="fn">Circle</span>(<span class="ty">double</span> r) <span class="op">:</span> <span class="fn">r</span>(r) {}
+    <span class="ty">void</span> <span class="fn">draw</span>()    <span class="kw">override</span> { cout <span class="op">&lt;&lt;</span> <span class="st">"Drawing Circle\n"</span><span class="op">;</span> }
+    <span class="ty">double</span> <span class="fn">area</span>() <span class="kw">override</span> { <span class="kw">return</span> <span class="nm">3.14159</span> <span class="op">*</span> r <span class="op">*</span> r<span class="op">;</span> }
+}<span class="op">;</span>
+
+<span class="kw">class</span> Rectangle <span class="op">:</span> <span class="kw">public</span> Shape {
+    <span class="ty">double</span> l<span class="op">,</span> b<span class="op">;</span>
+<span class="kw">public</span><span class="op">:</span>
+    <span class="fn">Rectangle</span>(<span class="ty">double</span> l<span class="op">,</span> <span class="ty">double</span> b) <span class="op">:</span> <span class="fn">l</span>(l)<span class="op">,</span> <span class="fn">b</span>(b) {}
+    <span class="ty">void</span> <span class="fn">draw</span>()    <span class="kw">override</span> { cout <span class="op">&lt;&lt;</span> <span class="st">"Drawing Rectangle\n"</span><span class="op">;</span> }
+    <span class="ty">double</span> <span class="fn">area</span>() <span class="kw">override</span> { <span class="kw">return</span> l <span class="op">*</span> b<span class="op">;</span> }
+}<span class="op">;</span>
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    Shape <span class="op">*</span>ptr<span class="op">;</span>
+
+    Circle    c(<span class="nm">7.0</span>)<span class="op">;</span>
+    Rectangle rect(<span class="nm">4.0</span><span class="op">,</span> <span class="nm">5.0</span>)<span class="op">;</span>
+
+    ptr <span class="op">=</span> <span class="op">&amp;</span>c<span class="op">;</span>    ptr<span class="op">-&gt;</span><span class="fn">draw</span>()<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Area = "</span> <span class="op">&lt;&lt;</span> ptr<span class="op">-&gt;</span><span class="fn">area</span>() <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+
+    ptr <span class="op">=</span> <span class="op">&amp;</span>rect<span class="op">;</span> ptr<span class="op">-&gt;</span><span class="fn">draw</span>()<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Area = "</span> <span class="op">&lt;&lt;</span> ptr<span class="op">-&gt;</span><span class="fn">area</span>() <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+}
+</pre></div>
+  </div>
+  <div class="output-box">
+    <div class="section-label">// output</div>
+    <pre>Drawing Circle
+Area = 153.938
+Drawing Rectangle
+Area = 20</pre>
+  </div>
+  <div class="page-footer"><span>// Program 11 of 15</span><span>C++ Lab Report</span></div>
+</div>
+
+
+<!-- ════ PROGRAM 12 ════ -->
+<div class="page">
+  <div class="prog-header">
+    <div class="prog-num c6">12</div>
+    <div class="prog-title-wrap">
+      <div class="aim-label">Aim / Objective</div>
+      <h2>Function Template to Sort an Array &amp; Class Template for a Stack</h2>
+    </div>
+  </div>
+  <div class="section-label">// description</div>
+  <div class="desc-box">Create a generic <code>sortArray()</code> function template (works on any data type) using Bubble Sort. Also implement a generic <code>Stack&lt;T&gt;</code> class template supporting push, pop, and display.</div>
+  <div class="section-label">// source code — program12.cpp</div>
+  <div class="code-wrap">
+    <div class="code-topbar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-lang">C++</span></div>
+    <div class="code-body"><pre>
+<span class="pp">#include&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std<span class="op">;</span>
+
+<span class="cm">// ── Function Template: Bubble Sort ─────────────</span>
+<span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span>
+<span class="ty">void</span> <span class="fn">sortArray</span>(T arr[], <span class="ty">int</span> n) {
+    <span class="kw">for</span> (<span class="ty">int</span> i <span class="op">=</span> <span class="nm">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">-</span><span class="nm">1</span><span class="op">;</span> i<span class="op">++</span>)
+        <span class="kw">for</span> (<span class="ty">int</span> j <span class="op">=</span> <span class="nm">0</span><span class="op">;</span> j <span class="op">&lt;</span> n<span class="op">-</span>i<span class="op">-</span><span class="nm">1</span><span class="op">;</span> j<span class="op">++</span>)
+            <span class="kw">if</span> (arr[j] <span class="op">&gt;</span> arr[j<span class="op">+</span><span class="nm">1</span>]) swap(arr[j], arr[j<span class="op">+</span><span class="nm">1</span>])<span class="op">;</span>
+}
+
+<span class="cm">// ── Class Template: Stack ───────────────────────</span>
+<span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span>
+<span class="kw">class</span> Stack {
+    T data[<span class="nm">100</span>]<span class="op">;</span>  <span class="ty">int</span> top<span class="op">;</span>
+<span class="kw">public</span><span class="op">:</span>
+    <span class="fn">Stack</span>() : <span class="fn">top</span>(<span class="op">-</span><span class="nm">1</span>) {}
+    <span class="ty">void</span> <span class="fn">push</span>(T val) {
+        <span class="kw">if</span> (top <span class="op">&lt;</span> <span class="nm">99</span>) data[<span class="op">++</span>top] <span class="op">=</span> val<span class="op">;</span>
+        <span class="kw">else</span> cout <span class="op">&lt;&lt;</span> <span class="st">"Stack Overflow!\n"</span><span class="op">;</span>
+    }
+    <span class="ty">void</span> <span class="fn">pop</span>() {
+        <span class="kw">if</span> (top <span class="op">&gt;=</span> <span class="nm">0</span>) cout <span class="op">&lt;&lt;</span> <span class="st">"Popped: "</span> <span class="op">&lt;&lt;</span> data[top<span class="op">--</span>] <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+        <span class="kw">else</span> cout <span class="op">&lt;&lt;</span> <span class="st">"Stack Underflow!\n"</span><span class="op">;</span>
+    }
+    <span class="ty">void</span> <span class="fn">display</span>() {
+        <span class="kw">for</span> (<span class="ty">int</span> i <span class="op">=</span> top<span class="op">;</span> i <span class="op">&gt;=</span> <span class="nm">0</span><span class="op">;</span> i<span class="op">--</span>) cout <span class="op">&lt;&lt;</span> data[i] <span class="op">&lt;&lt;</span> <span class="st">" "</span><span class="op">;</span>
+        cout <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    }
+}<span class="op">;</span>
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> arr[] <span class="op">=</span> {<span class="nm">5</span><span class="op">,</span><span class="nm">2</span><span class="op">,</span><span class="nm">8</span><span class="op">,</span><span class="nm">1</span><span class="op">,</span><span class="nm">9</span>}<span class="op">;</span>
+    <span class="fn">sortArray</span>(arr<span class="op">,</span> <span class="nm">5</span>)<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Sorted int array: "</span><span class="op">;</span>
+    <span class="kw">for</span> (<span class="ty">int</span> x <span class="op">:</span> arr) cout <span class="op">&lt;&lt;</span> x <span class="op">&lt;&lt;</span> <span class="st">" "</span><span class="op">;</span> cout <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+
+    Stack<span class="op">&lt;</span><span class="ty">int</span><span class="op">&gt;</span> s<span class="op">;</span>
+    s<span class="op">.</span><span class="fn">push</span>(<span class="nm">10</span>)<span class="op">;</span> s<span class="op">.</span><span class="fn">push</span>(<span class="nm">20</span>)<span class="op">;</span> s<span class="op">.</span><span class="fn">push</span>(<span class="nm">30</span>)<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Stack: "</span><span class="op">;</span> s<span class="op">.</span><span class="fn">display</span>()<span class="op">;</span>
+    s<span class="op">.</span><span class="fn">pop</span>()<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"After pop: "</span><span class="op">;</span> s<span class="op">.</span><span class="fn">display</span>()<span class="op">;</span>
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+}
+</pre></div>
+  </div>
+  <div class="output-box">
+    <div class="section-label">// output</div>
+    <pre>Sorted int array: 1 2 5 8 9
+Stack: 30 20 10
+Popped: 30
+After pop: 20 10</pre>
+  </div>
+  <div class="page-footer"><span>// Program 12 of 15</span><span>C++ Lab Report</span></div>
+</div>
+
+
+<!-- ════ PROGRAM 13 ════ -->
+<div class="page">
+  <div class="prog-header">
+    <div class="prog-num c1">13</div>
+    <div class="prog-title-wrap">
+      <div class="aim-label">Aim / Objective</div>
+      <h2>Pointers to Objects and the <code>this</code> Pointer</h2>
+    </div>
+  </div>
+  <div class="section-label">// description</div>
+  <div class="desc-box">Demonstrate creating a pointer to an object, accessing members via <code>-&gt;</code> operator, and using the <code>this</code> pointer inside member functions to distinguish between local and member variables.</div>
+  <div class="section-label">// source code — program13.cpp</div>
+  <div class="code-wrap">
+    <div class="code-topbar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-lang">C++</span></div>
+    <div class="code-body"><pre>
+<span class="pp">#include&lt;iostream&gt;</span>
+<span class="pp">#include&lt;string&gt;</span>
+<span class="kw">using namespace</span> std<span class="op">;</span>
+
+<span class="kw">class</span> Student {
+<span class="kw">public</span><span class="op">:</span>
+    <span class="ty">string</span> name<span class="op">;</span>
+    <span class="ty">int</span>    roll<span class="op">;</span>
+    <span class="ty">float</span>  cgpa<span class="op">;</span>
+
+    <span class="cm">// 'this' pointer demo — same param names as members</span>
+    <span class="ty">void</span> <span class="fn">setData</span>(<span class="ty">string</span> name<span class="op">,</span> <span class="ty">int</span> roll<span class="op">,</span> <span class="ty">float</span> cgpa) {
+        <span class="kw">this</span><span class="op">-&gt;</span>name <span class="op">=</span> name<span class="op">;</span>
+        <span class="kw">this</span><span class="op">-&gt;</span>roll <span class="op">=</span> roll<span class="op">;</span>
+        <span class="kw">this</span><span class="op">-&gt;</span>cgpa <span class="op">=</span> cgpa<span class="op">;</span>
+    }
+
+    <span class="ty">void</span> <span class="fn">display</span>() {
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Name: "</span> <span class="op">&lt;&lt;</span> <span class="kw">this</span><span class="op">-&gt;</span>name
+             <span class="op">&lt;&lt;</span> <span class="st">"  Roll: "</span> <span class="op">&lt;&lt;</span> <span class="kw">this</span><span class="op">-&gt;</span>roll
+             <span class="op">&lt;&lt;</span> <span class="st">"  CGPA: "</span> <span class="op">&lt;&lt;</span> <span class="kw">this</span><span class="op">-&gt;</span>cgpa <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    }
+
+    <span class="cm">// Return *this for method chaining</span>
+    Student<span class="op">&amp;</span> <span class="fn">updateCGPA</span>(<span class="ty">float</span> cgpa) {
+        <span class="kw">this</span><span class="op">-&gt;</span>cgpa <span class="op">=</span> cgpa<span class="op">;</span>
+        <span class="kw">return</span> <span class="op">*</span><span class="kw">this</span><span class="op">;</span>
+    }
+}<span class="op">;</span>
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    Student s1<span class="op">;</span>
+    s1<span class="op">.</span><span class="fn">setData</span>(<span class="st">"Jitesh"</span><span class="op">,</span> <span class="nm">101</span><span class="op">,</span> <span class="nm">8.5f</span>)<span class="op">;</span>
+
+    <span class="cm">// Pointer to object</span>
+    Student <span class="op">*</span>ptr <span class="op">=</span> <span class="op">&amp;</span>s1<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Using dot operator : "</span><span class="op">;</span> s1<span class="op">.</span><span class="fn">display</span>()<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Using -> operator  : "</span><span class="op">;</span> ptr<span class="op">-&gt;</span><span class="fn">display</span>()<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Address via this   : "</span> <span class="op">&lt;&lt;</span> ptr <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+
+    <span class="cm">// Dynamic object allocation</span>
+    Student <span class="op">*</span>dyn <span class="op">=</span> <span class="kw">new</span> Student()<span class="op">;</span>
+    dyn<span class="op">-&gt;</span><span class="fn">setData</span>(<span class="st">"Rahul"</span><span class="op">,</span> <span class="nm">102</span><span class="op">,</span> <span class="nm">7.8f</span>)<span class="op">;</span>
+    dyn<span class="op">-&gt;</span><span class="fn">updateCGPA</span>(<span class="nm">8.0f</span>)<span class="op">.</span><span class="fn">display</span>()<span class="op">;</span>
+    <span class="kw">delete</span> dyn<span class="op">;</span>
+
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+}
+</pre></div>
+  </div>
+  <div class="output-box">
+    <div class="section-label">// output</div>
+    <pre>Using dot operator : Name: Jitesh  Roll: 101  CGPA: 8.5
+Using -> operator  : Name: Jitesh  Roll: 101  CGPA: 8.5
+Address via this   : 0x61ff10
+Name: Rahul  Roll: 102  CGPA: 8</pre>
+  </div>
+  <div class="page-footer"><span>// Program 13 of 15</span><span>C++ Lab Report</span></div>
+</div>
+
+
+<!-- ════ PROGRAM 14 ════ -->
+<div class="page">
+  <div class="prog-header">
+    <div class="prog-num c2">14</div>
+    <div class="prog-title-wrap">
+      <div class="aim-label">Aim / Objective</div>
+      <h2>Exception Handling: Division by Zero &amp; Invalid Input</h2>
+    </div>
+  </div>
+  <div class="section-label">// description</div>
+  <div class="desc-box">Use <code>try</code>, <code>catch</code>, and <code>throw</code> to handle: (a) division by zero exception, (b) invalid (negative) input exception, and (c) a custom exception class for domain-specific errors.</div>
+  <div class="section-label">// source code — program14.cpp</div>
+  <div class="code-wrap">
+    <div class="code-topbar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-lang">C++</span></div>
+    <div class="code-body"><pre>
+<span class="pp">#include&lt;iostream&gt;</span>
+<span class="pp">#include&lt;stdexcept&gt;</span>
+<span class="pp">#include&lt;string&gt;</span>
+<span class="kw">using namespace</span> std<span class="op">;</span>
+
+<span class="cm">// Custom Exception Class</span>
+<span class="kw">class</span> NegativeInputException {
+    <span class="ty">string</span> msg<span class="op">;</span>
+<span class="kw">public</span><span class="op">:</span>
+    <span class="fn">NegativeInputException</span>(<span class="ty">string</span> m) <span class="op">:</span> <span class="fn">msg</span>(m) {}
+    <span class="ty">string</span> <span class="fn">what</span>() { <span class="kw">return</span> msg<span class="op">;</span> }
+}<span class="op">;</span>
+
+<span class="ty">double</span> <span class="fn">safeDivide</span>(<span class="ty">double</span> a<span class="op">,</span> <span class="ty">double</span> b) {
+    <span class="kw">if</span> (b <span class="op">==</span> <span class="nm">0</span>) <span class="kw">throw</span> runtime_error(<span class="st">"Division by zero!"</span>)<span class="op">;</span>
+    <span class="kw">return</span> a <span class="op">/</span> b<span class="op">;</span>
+}
+
+<span class="ty">double</span> <span class="fn">squareRoot</span>(<span class="ty">double</span> n) {
+    <span class="kw">if</span> (n <span class="op">&lt;</span> <span class="nm">0</span>)
+        <span class="kw">throw</span> <span class="fn">NegativeInputException</span>(<span class="st">"Cannot take sqrt of negative number!"</span>)<span class="op">;</span>
+    <span class="ty">double</span> result <span class="op">=</span> <span class="nm">1</span><span class="op">,</span> x <span class="op">=</span> n<span class="op">;</span>
+    <span class="kw">for</span>(<span class="ty">int</span> i<span class="op">=</span><span class="nm">0</span><span class="op">;</span>i<span class="op">&lt;</span><span class="nm">50</span><span class="op">;</span>i<span class="op">++</span>) result<span class="op">=</span>(result<span class="op">+</span>x<span class="op">/</span>result)<span class="op">/</span><span class="nm">2</span><span class="op">;</span>
+    <span class="kw">return</span> result<span class="op">;</span>
+}
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="kw">try</span> {
+        cout <span class="op">&lt;&lt;</span> <span class="st">"10 / 2 = "</span> <span class="op">&lt;&lt;</span> <span class="fn">safeDivide</span>(<span class="nm">10</span><span class="op">,</span><span class="nm">2</span>) <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+        cout <span class="op">&lt;&lt;</span> <span class="st">"10 / 0 = "</span> <span class="op">&lt;&lt;</span> <span class="fn">safeDivide</span>(<span class="nm">10</span><span class="op">,</span><span class="nm">0</span>) <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    }
+    <span class="kw">catch</span> (runtime_error<span class="op">&amp;</span> e) {
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Caught: "</span> <span class="op">&lt;&lt;</span> e<span class="op">.</span><span class="fn">what</span>() <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    }
+
+    <span class="kw">try</span> {
+        cout <span class="op">&lt;&lt;</span> <span class="st">"sqrt(25) = "</span> <span class="op">&lt;&lt;</span> <span class="fn">squareRoot</span>(<span class="nm">25</span>) <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+        cout <span class="op">&lt;&lt;</span> <span class="st">"sqrt(-4) = "</span> <span class="op">&lt;&lt;</span> <span class="fn">squareRoot</span>(<span class="op">-</span><span class="nm">4</span>) <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    }
+    <span class="kw">catch</span> (NegativeInputException<span class="op">&amp;</span> e) {
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Caught: "</span> <span class="op">&lt;&lt;</span> e<span class="op">.</span><span class="fn">what</span>() <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    }
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+}
+</pre></div>
+  </div>
+  <div class="output-box">
+    <div class="section-label">// output</div>
+    <pre>10 / 2 = 5
+Caught: Division by zero!
+sqrt(25) = 5
+Caught: Cannot take sqrt of negative number!</pre>
+  </div>
+  <div class="page-footer"><span>// Program 14 of 15</span><span>C++ Lab Report</span></div>
+</div>
+
+
+<!-- ════ PROGRAM 15 ════ -->
+<div class="page">
+  <div class="prog-header">
+    <div class="prog-num c3">15</div>
+    <div class="prog-title-wrap">
+      <div class="aim-label">Aim / Objective</div>
+      <h2>Read and Write Student Records Using File Operations</h2>
+    </div>
+  </div>
+  <div class="section-label">// description</div>
+  <div class="desc-box">Use C++ file streams (<code>ofstream</code>, <code>ifstream</code>) to write student records to a binary/text file and read them back. Demonstrate sequential file I/O for persistent data storage.</div>
+  <div class="section-label">// source code — program15.cpp</div>
+  <div class="code-wrap">
+    <div class="code-topbar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-lang">C++</span></div>
+    <div class="code-body"><pre>
+<span class="pp">#include&lt;iostream&gt;</span>
+<span class="pp">#include&lt;fstream&gt;</span>
+<span class="pp">#include&lt;string&gt;</span>
+<span class="kw">using namespace</span> std<span class="op">;</span>
+
+<span class="kw">struct</span> Student {
+    <span class="ty">char</span>  name[<span class="nm">50</span>]<span class="op">;</span>
+    <span class="ty">int</span>   roll<span class="op">;</span>
+    <span class="ty">float</span> marks<span class="op">;</span>
+}<span class="op">;</span>
+
+<span class="ty">void</span> <span class="fn">writeRecords</span>() {
+    ofstream fout(<span class="st">"students.dat"</span><span class="op">,</span> ios<span class="op">::</span>binary)<span class="op">;</span>
+    Student students[] <span class="op">=</span> {
+        {<span class="st">"Jitesh"</span><span class="op">,</span>  <span class="nm">101</span><span class="op">,</span> <span class="nm">92.5f</span>},
+        {<span class="st">"Rahul"</span><span class="op">,</span>   <span class="nm">102</span><span class="op">,</span> <span class="nm">88.0f</span>},
+        {<span class="st">"Priya"</span><span class="op">,</span>   <span class="nm">103</span><span class="op">,</span> <span class="nm">95.0f</span>},
+        {<span class="st">"Vikash"</span><span class="op">,</span>  <span class="nm">104</span><span class="op">,</span> <span class="nm">79.5f</span>}
+    }<span class="op">;</span>
+    <span class="kw">for</span> (<span class="kw">auto</span><span class="op">&amp;</span> s <span class="op">:</span> students)
+        fout<span class="op">.</span><span class="fn">write</span>((<span class="ty">char</span><span class="op">*</span>)<span class="op">&amp;</span>s<span class="op">,</span> <span class="kw">sizeof</span>(Student))<span class="op">;</span>
+    fout<span class="op">.</span><span class="fn">close</span>()<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"4 records written to students.dat\n\n"</span><span class="op">;</span>
+}
+
+<span class="ty">void</span> <span class="fn">readRecords</span>() {
+    ifstream fin(<span class="st">"students.dat"</span><span class="op">,</span> ios<span class="op">::</span>binary)<span class="op">;</span>
+    <span class="kw">if</span> (<span class="op">!</span>fin) { cout <span class="op">&lt;&lt;</span> <span class="st">"File not found!\n"</span><span class="op">;</span> <span class="kw">return</span><span class="op">;</span> }
+    Student s<span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Roll\tName\t\tMarks\n"</span><span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"----\t----\t\t-----\n"</span><span class="op">;</span>
+    <span class="kw">while</span> (fin<span class="op">.</span><span class="fn">read</span>((<span class="ty">char</span><span class="op">*</span>)<span class="op">&amp;</span>s<span class="op">,</span> <span class="kw">sizeof</span>(Student)))
+        cout <span class="op">&lt;&lt;</span> s<span class="op">.</span>roll <span class="op">&lt;&lt;</span> <span class="st">"\t"</span> <span class="op">&lt;&lt;</span> s<span class="op">.</span>name
+             <span class="op">&lt;&lt;</span> <span class="st">"\t\t"</span> <span class="op">&lt;&lt;</span> s<span class="op">.</span>marks <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    fin<span class="op">.</span><span class="fn">close</span>()<span class="op">;</span>
+}
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="fn">writeRecords</span>()<span class="op">;</span>
+    <span class="fn">readRecords</span>()<span class="op">;</span>
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+}
+</pre></div>
+  </div>
+  <div class="output-box">
+    <div class="section-label">// output</div>
+    <pre>4 records written to students.dat
+
+Roll    Name        Marks
+----    ----        -----
+101     Jitesh      92.5
+102     Rahul       88
+103     Priya       95
+104     Vikash      79.5</pre>
+  </div>
+  <div class="page-footer"><span>// Program 15 of 15  ✓ End of Lab Report</span><span>C++ Lab Report</span></div>
+</div>
+
+</body>
+</html>
